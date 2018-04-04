@@ -1,3 +1,4 @@
 *.pyc
 .vscode
 my_file.py
+migrations
