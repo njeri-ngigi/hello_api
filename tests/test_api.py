@@ -95,8 +95,13 @@ class BooksTestCase(unittest.TestCase):
         self.assertEqual(result6.status_code, 200)
         self.assertIn("Book returned successfully", result6.data)
 
+    def tearDown(self):
+        '''teardown all initialized variables'''
+        with self.app.app_context():
+            #drop all tables
+            app.db.session.remove()
+            app.db.drop_all()
+
+#make tests executable
 if __name__ == "__main__":
     unittest.main()
-
-
-    
