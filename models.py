@@ -1,7 +1,7 @@
 '''models.py'''
-from app import db
+from db import db
 
-class Books(db.Model):
+class BookModel(db.Model):
     '''class representing books table'''
     __tablename__ = 'books'
 
@@ -28,7 +28,7 @@ class Books(db.Model):
         return '<title: %s, author: %s, edition: %s, copies: %s, status: %s>' % (self.title,
                 self.author, self.edition, self.copies, self.status)
 
-class Users(db.Model):
+class UserModel(db.Model):
     '''class representing users table'''
     __tablename__ = 'users'
 
