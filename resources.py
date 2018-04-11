@@ -2,7 +2,7 @@
 import random
 import string
 from flask import request
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_restful import Resource
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_raw_jwt, get_jwt_claims, get_jwt_identity)
@@ -92,35 +92,106 @@ class Logout(Resource):
 class ResetPassword(Resource):
     def post(self):
         '''Reset a password'''
-        username = request.get_json().get('username')
-        if not username:
+        data = request.get_json()
+        if not data:
             return {"message":"Enter username"}
-        my_user = UserModel.query.filter_by(username=username).first()
-        if my_user is not None:
-            new_password = ''.join(
+        username = data.get('username')
+        user = UserModel.query.filter_by(username=username).first()
+        if user is not None:
+            generated_password = ''.join(
             random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
-            UserModel.reset_password(new_password)
+            
+            user.reset_password = generate_password_hash(generated_password)
+            user.save()
+            reset_token = create_access_token(identity=user)
+            return dict(reset_token=reset_token, reset_password=generated_password)
 
-            reset_token = create_access_token(identity="reset_password")
-            return {"reset_token": reset_token}
+        return {"message":"User doesn't exist"}
 
-        return {"message":"Incorrect username"}
 
 class ChangePassword(Resource):
     @jwt_required
     def put(self):
         '''Change a password'''
-        pass        
+        claims = get_jwt_claims()
+        reset = claims["reset_password"].encode('ascii')
+        if reset != "false":
+            data = request.get_json()
+            if not data:
+                return dict(message="Fields can't be empty")
+            reset_password = data.get("reset_password")
+            new_password = data.get("new_password")
+            confirm_password = data.get("confirm_password")
+
+            if not reset_password and not new_password:
+                dict(message="reset password or new password fields missing")
+
+            if new_password != confirm_password:
+                return dict(message="passwords don't match")
+            
+            user_identity = get_jwt_identity()
+            user = UserModel.query.filter_by(username=user_identity).first()
+            if check_password_hash(reset, reset_password) is True:
+                user.password = generate_password_hash(new_password)
+                user.reset_password = False
+                user.save()
+                return dict(message="password changed successfully")
+            return dict(message="incorrect reset password")
+                
+        data = request.get_json()
+        if not data:
+            return dict(message="Fields cannot be empty")
+
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
+
+        my_list = [old_password, new_password, confirm_password]
+        for i in my_list:
+            if i is None:
+                return dict(message="enter valid data")
+            i = i.strip()
+            if not i:
+                return dict(message="enter valid data")
+        if new_password != confirm_password:
+            return dict(message="passwords don't match")
+
+        user_identity = get_jwt_identity()
+        user = UserModel.query.filter_by(username=user_identity).first()
+        if check_password_hash(user.password, old_password) is True:
+            user.password = generate_password_hash(new_password)
+            user.save()
+            return dict(message="password changed successfully")
+        return dict(message="Incorrect password")
+
 
 class BorrowAndReturnBook(Resource):
     @jwt_required
     def post(self, book_id):
         '''Borrow a book'''
-        pass 
+        book = BookModel.query.filter_by(book_id=book_id).first()
+        if book is None:
+             return dict(message="book doesn't exist")
+        if book.status == "available":
+            book.copies -= 1
+            if book.copies == 0:
+                book.status = "unavailable"
+
+            book.save()
+            return dict(message="book successfully checked out")   
+        return dict(message="book is currently unavailable")
+   
     @jwt_required
-    def put(self):
+    def put(self, book_id):
         '''Return a book'''
-        pass
+        book = BookModel.query.filter_by(book_id=book_id).first()
+        if book is None:
+            return dict(message="book {} you are trying to access doesn't exist".format(book_id))
+        book.copies += 1
+        if book.status == "unavailable":
+            book.status = "available"
+        book.save()
+        return dict(message="book {} successfully returned".format(book_id))
 
 class UserHistory(Resource):
     @jwt_required
@@ -135,13 +206,21 @@ class BooksNotReturned(Resource):
         pass
 
 class Books(Resource):
+    '''retrieve all books'''
     def get(self):
-        '''retrieve all books'''
-        pass
+        '''method ['GET']'''
+        all_books={}
+        result =BookModel.query.all()
+        for book in result:
+            all_books[book.book_id]={"title":book.title, "author":book.author,
+                                          "edition":book.edition, "copies":book.copies, "status":book.status}
+            
+        return all_books, 200
     @jwt_required
     def post(self):
         '''Only admin can add a book'''
         claims = get_jwt_claims()
+        user = get_jwt_identity()
         
         if claims["admin"] is True:
             data = request.get_json()
@@ -182,24 +261,75 @@ class Books(Resource):
 
 class BooksBookId(Resource):
     '''class representing book by id actions'''
-    def get(self):
+    def get(self, book_id):
         '''retrieve a single book'''
-        pass
-
+        book = BookModel.query.filter_by(book_id=book_id).first()
+        if book is None:
+            return {"message": "Book doesn't exist"}
+        return {book.book_id: {"title": book.title, "author": book.author,
+                "edition": book.edition, "copies": book.copies, "status": book.status}}
     @jwt_required
-    def put(self):
+    def put(self, book_id):
         '''Only admin can edit a book'''
         claims = get_jwt_claims()
         if claims["admin"] is True:
-            pass
+            data = request.get_json()
+            if not data:
+                return {"message": "Enter valid data for edit"}
+            title = data.get("title")
+            author = data.get("author")
+            edition = data.get("edition")
+            copies = data.get("copies")
+            status = data.get("status")
 
+            book = BookModel.query.filter_by(book_id=book_id).first()
+            if book is None:
+                return dict(message="book doesn't exist")
+            if not title and not author and not edition and not copies and not status:
+                return dict(message="all fields cannot be empty enter data to edit")
+            if not title:
+                title = book.title
+            if not author:
+                author = book.author
+            if not edition:
+                edition = book.edition
+            if not copies:
+                copies = book.copies
+            if not status:
+                status = book.status
+
+            my_list = [title, edition, author, status]
+            for i in my_list:
+                i = i.strip()
+                if i is None or not i:
+                    return dict(message="Enter vaild data")
+
+            if not isinstance(copies, int):
+                return {"message": "Field copies has to be an integer"}, 200
+            if copies < 0:
+                return {"message": "Copies entered cannot be a negative number"}, 200
+            status = status.encode('ascii')
+            if status == "available" or status == "unavailable":
+                book.title = title
+                book.author = author
+                book.edition = edition
+                book.copies = copies
+                book.status = status
+                book.save()
+                return dict(message="Book {} successfully edited".format(book_id))
+
+            return dict(message="status has to be either available or unavailble", status=title)
         return {"message": "Admin privilege required"} 
     @jwt_required
-    def delete(self):
+    def delete(self, book_id):
         '''Only admin can delete a book'''
         claims = get_jwt_claims()
         if claims["admin"] is True:
-            pass
+            book = BookModel.query.filter_by(book_id=book_id).first()
+            if book is None:
+                return {"message": "book {} doesn't exist".format(book_id)}
+            book.delete()
+            return {"message": "book {} deleted successfully".format(book_id)}
 
         return {"message": "Admin privilege required"}
 
