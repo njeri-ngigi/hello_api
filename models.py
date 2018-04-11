@@ -27,19 +27,19 @@ class BookModel(db.Model):
 
     def get_single_book(self, book_id):
         '''retrieve single book by id'''
-        pass
 
     def get_all_books(self, book_id):
         '''retrieve all books'''
         pass
 
-    def edit_book(book_id):
+    def edit_book(self, book_id):
         '''edit book by id'''
         pass 
 
-    def delete(self, book_id):
+    def delete(self):
         '''delete a book by id'''
-        pass
+        db.session.delete(self)
+        db.session.commit()
 
 
     def __repr__(self):
@@ -63,11 +63,12 @@ class UserModel(db.Model):
         self.email = email
         self.password = generate_password_hash(password)
         self.admin = admin
+        self.reset_password = False
 
-    def password_reset(self, reset_password):
-        '''reset password'''
-        self.reset_password = generate_password_hash(reset_password)
-        pass
+    # def password_reset(self, reset_password):
+    #     '''reset password'''
+    #     self.reset_password = generate_password_hash(reset_password)
+    #     pass
 
     def change_password(self, old_password):
         '''change password'''
