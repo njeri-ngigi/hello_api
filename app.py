@@ -25,13 +25,13 @@ def create_app(config_name):
     db.init_app(app)
 
     app.config['JWT_BLACKLIST_ENABLED'] = True
-    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access' '''refresh''']
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
     jwt = JWTManager(app)
     blacklist = set()
 
     @jwt.user_claims_loader
     def add_claims_to_access_token(user_object):
-        return {"admin": user_object.admin}
+        return dict(admin=user_object.admin, reset_password=user_object.reset_password)
 
     @jwt.user_identity_loader
     def user_identity_lookup(user_object):
@@ -49,7 +49,8 @@ def create_app(config_name):
     api.add_resource(resources.Logout, '/api/v1/auth/logout')
     api.add_resource(resources.ResetPassword, '/api/v1/auth/reset-password')
     api.add_resource(resources.ChangePassword, '/api/v1/auth/change-password')
-    api.add_resource(resources.BorrowAndReturnBook, '/api/v1/users/books/<int:book_id>')
+    api.add_resource(resources.BorrowAndReturnBook,
+                     '/api/v1/users/books/<int:book_id>')
     api.add_resource(resources.UserHistory, '/api/v1/users/books')
     #api.add_resource(resources.BooksNotReturned, '/api/v1/')
     api.add_resource(resources.Books, '/api/v1/books')
