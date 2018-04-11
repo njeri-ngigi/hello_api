@@ -38,7 +38,7 @@ class Validate():
         my_list = [username, name, password]
         for i in my_list:
             i = i.strip()
-            if i is None or not i:
+            if not i:
                 return {"message": "Enter valid data"}
         if confirm_password != password:
             return {"message": "Passwords don't match"}
