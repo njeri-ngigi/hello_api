@@ -9,9 +9,9 @@ class BorrowAndReturnBook(Resource):
     @jwt_required
     def post(self, book_id):
         '''Borrow a book'''
-        book = BookModel.query.filter_by(book_id=book_id).first()
+        book = BookModel.get_book_by_id(book_id)
         if book is None:
-             return dict(message="book doesn't exist"), 404
+            return dict(message="book doesn't exist"), 404
         if book.status == "available":
             book.copies -= 1
             if book.copies == 0:
@@ -24,7 +24,7 @@ class BorrowAndReturnBook(Resource):
     @jwt_required
     def put(self, book_id):
         '''Return a book'''
-        book = BookModel.query.filter_by(book_id=book_id).first()
+        book = BookModel.get_book_by_id(book_id)
         if book is None:
             return dict(message="book {} you are trying to access doesn't exist".format(book_id)), 404
         book.copies += 1

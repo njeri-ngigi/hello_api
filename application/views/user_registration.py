@@ -12,16 +12,23 @@ class Registration(Resource):
         data = request.get_json()
         if not data:
             return {"message": "Fields cannot be empty"}, 400
-        v = Validate().validate_register(data)
-
+        username = data.get('username')
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+        if not username or not name or not email or not password or not confirm_password:
+            return dict(message=
+                        "name, username, email, password or confirm_password fields missing")
+        v = Validate().validate_register(username, name, email, password, confirm_password)
         if "message" in v:
             return v, 400
 
         admin = data.get('admin')
 
-        if UserModel.query.filter_by(username=v["username"]).first():
+        if UserModel.get_user_by_username(v["username"]):
             return {"message": "Add user failed. Username already exists"}, 409
-        if UserModel.query.filter_by(email=v["email"]).first():
+        if UserModel.get_user_by_email(v["email"]):
             return {"message": "Add user failed. Email entered already exists"}, 409
         if not admin:
             my_user = UserModel(username=v["username"], name=v["name"],

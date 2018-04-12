@@ -2,7 +2,7 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import (
-    jwt_required, jwt_refresh_token_required, get_jwt_claims, get_jwt_identity)
+    jwt_required, jwt_refresh_token_required, get_jwt_claims)
 from application import BookModel
 
 class Books(Resource):
