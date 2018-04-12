@@ -21,14 +21,15 @@ class UserModel(db.Model):
         self.admin = admin
         self.reset_password = False
 
-    # def password_reset(self, reset_password):
-    #     '''reset password'''
-    #     self.reset_password = generate_password_hash(reset_password)
-    #     pass
+    @classmethod
+    def get_user_by_username(cls, username):
+        '''query user table using username'''
+        return cls.query.filter_by(username=username).first()
 
-    def change_password(self, old_password):
-        '''change password'''
-        pass
+    @classmethod
+    def get_user_by_email(cls, email):
+        '''query user table using email'''
+        return cls.query.filter_by(email=email).first()
 
     def save(self):
         '''commit and save data from object'''

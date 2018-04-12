@@ -1,8 +1,8 @@
 '''app.py'''
 from flask import Flask
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-from flask_restful import Api
 from instance import app_config
 
 db = SQLAlchemy()
@@ -30,10 +30,12 @@ def create_app(config_name):
 
     @jwt.user_claims_loader
     def add_claims_to_access_token(user_object):
+        '''add admin and reset password claims to access token'''
         return dict(admin=user_object.admin, reset_password=user_object.reset_password)
 
     @jwt.user_identity_loader
     def user_identity_lookup(user_object):
+        '''set token identity from user_object passed'''
         return user_object.username
 
     @jwt.token_in_blacklist_loader

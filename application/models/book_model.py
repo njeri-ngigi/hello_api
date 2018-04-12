@@ -26,28 +26,24 @@ class BookModel(db.Model):
 
     @classmethod
     def get_book_by_id(cls, book_id):
-        '''retrieve single book by id''' 
-        return db.session.query.filter_by(book_id=book_id).first()
+        '''retrieve single book by id'''
+        return cls.query.filter_by(book_id=book_id).first()
 
     @classmethod
     def get_book_by_title(cls, title):
         '''retrieve single book by title'''
-        return db.session.query.filter_by(title=title).first()
-    
+        return cls.query.filter_by(title=title).first()
+
     @classmethod
     def get_all_books(cls):
         '''retrieve all books'''
         all_books = {}
-        result = db.session.query.all()
+        result = cls.query.all()
         for book in result:
             all_books[book.book_id] = {"title": book.title, "author": book.author,
-                                       "edition": book.edition, "copies": book.copies, "status": book.status}
-
+                                       "edition": book.edition, "copies": book.copies,
+                                       "status": book.status}
         return all_books
-
-    def edit_book(self, book_id):
-        '''edit book by id'''
-        pass
 
     def delete(self):
         '''delete a book by id'''
@@ -55,5 +51,5 @@ class BookModel(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return '<title: %s, author: %s, edition: %s, copies: %s, status: %s>' % (self.title,
-                                                                                 self.author, self.edition, self.copies, self.status)
+        return '<title: %s, author: %s, edition: %s, copies: %s, status: %s>'% (
+            self.title, self.author, self.edition, self.copies, self.status)
