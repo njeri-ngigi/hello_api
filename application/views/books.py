@@ -10,13 +10,7 @@ class Books(Resource):
 
     def get(self):
         '''method ['GET']'''
-        all_books = {}
-        result = BookModel.query.all()
-        for book in result:
-            all_books[book.book_id] = {"title": book.title, "author": book.author,
-                                       "edition": book.edition, "copies": book.copies, "status": book.status}
-
-        return all_books, 200
+        return BookModel.get_all_books(), 200
 
     @jwt_required
     def post(self):
@@ -51,7 +45,7 @@ class Books(Resource):
                 status = "unavailable"
             status = "available"
 
-            if BookModel.query.filter_by(title=title).first():
+            if BookModel.get_book_by_title(title):
                 return {"message": "Add book failed. Book title already exists"}, 409
             my_book = BookModel(author, title, edition, copies, status)
             my_book.save()
@@ -64,7 +58,7 @@ class BooksBookId(Resource):
 
     def get(self, book_id):
         '''retrieve a single book'''
-        book = BookModel.query.filter_by(book_id=book_id).first()
+        book = BookModel.get_book_by_id(book_id)
         if book is None:
             return {"message": "Book doesn't exist"}, 404
         return {book.book_id: {"title": book.title, "author": book.author,
@@ -84,7 +78,7 @@ class BooksBookId(Resource):
             copies = data.get("copies")
             status = data.get("status")
 
-            book = BookModel.query.filter_by(book_id=book_id).first()
+            book = BookModel.get_book_by_id(book_id)
             if book is None:
                 return dict(message="book doesn't exist"), 404
             if not title and not author and not edition and not copies and not status:
@@ -128,7 +122,7 @@ class BooksBookId(Resource):
         '''Only admin can delete a book'''
         claims = get_jwt_claims()
         if claims["admin"] is True:
-            book = BookModel.query.filter_by(book_id=book_id).first()
+            book = BookModel.get_book_by_id(book_id)
             if book is None:
                 return {"message": "book {} doesn't exist".format(book_id)}, 404
             book.delete()

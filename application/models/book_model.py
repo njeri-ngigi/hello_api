@@ -24,12 +24,26 @@ class BookModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_single_book(self, book_id):
-        '''retrieve single book by id'''
+    @classmethod
+    def get_book_by_id(cls, book_id):
+        '''retrieve single book by id''' 
+        return db.session.query.filter_by(book_id=book_id).first()
 
-    def get_all_books(self, book_id):
+    @classmethod
+    def get_book_by_title(cls, title):
+        '''retrieve single book by title'''
+        return db.session.query.filter_by(title=title).first()
+    
+    @classmethod
+    def get_all_books(cls):
         '''retrieve all books'''
-        pass
+        all_books = {}
+        result = db.session.query.all()
+        for book in result:
+            all_books[book.book_id] = {"title": book.title, "author": book.author,
+                                       "edition": book.edition, "copies": book.copies, "status": book.status}
+
+        return all_books
 
     def edit_book(self, book_id):
         '''edit book by id'''
