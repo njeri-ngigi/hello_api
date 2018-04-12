@@ -19,7 +19,7 @@ class Registration(Resource):
         confirm_password = data.get('confirm_password')
         if not username or not name or not email or not password or not confirm_password:
             return dict(message=
-                        "name, username, email, password or confirm_password fields missing")
+                        "name, username, email, password or confirm_password fields missing"), 400
         v = Validate().validate_register(username, name, email, password, confirm_password)
         if "message" in v:
             return v, 400

@@ -4,7 +4,7 @@ import json
 import ast
 from application import create_app, db
 
-class BookModelTestCase(unittest.TestCase):
+class AuthenticationTestCase(unittest.TestCase):
     '''class representing BookModel Test case'''
     
     def setUp(self):

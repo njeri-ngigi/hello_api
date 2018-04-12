@@ -4,7 +4,7 @@ import json
 import ast
 from application import create_app, db
 
-class BookModelTestCase(unittest.TestCase):
+class GetBooksTestCase(unittest.TestCase):
     '''class representing BookModel Test case'''
     def setUp(self):
         self.app = create_app(config_name="testing")
@@ -42,3 +42,6 @@ class BookModelTestCase(unittest.TestCase):
         with self.app.app_context():
             db.session.remove()
             db.drop_all()
+
+if __name__ == "__main__":
+    unittest.main()

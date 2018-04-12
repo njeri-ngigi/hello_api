@@ -72,6 +72,8 @@ class ResetPassword(Resource):
         if not data:
             return {"message": "Enter username"}, 400
         username = data.get('username')
+        if not username:
+            return {"message": "Enter username"}, 400
         user = UserModel.get_user_by_username(username)
         if user is not None:
             generated_password = ''.join(
