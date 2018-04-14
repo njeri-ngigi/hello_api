@@ -14,7 +14,7 @@ class TestingConfig(Config):
     '''configurations for testing with a separate test database'''
     TESTING = True
     Debug = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:@localhost/test_db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:testme@localhost/test_db'
 
 app_config = {
     'development' : DevelopmentConfig,

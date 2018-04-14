@@ -15,6 +15,9 @@ addons:
 env:
   global:
    - PGPORT=5433
+   - DATABASE_NAME = 'test_db'
+   - DATABASE_USER = 'postgres'
+   - DATABASE_PASSWORD = 'testme'
 services:
  - postgresql
 before_script:
