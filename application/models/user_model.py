@@ -1,5 +1,6 @@
 '''models/user_model.py'''
 from werkzeug.security import generate_password_hash
+#from sqlalchemy import and_
 from application.app import db
 
 class UserModel(db.Model):
@@ -12,6 +13,7 @@ class UserModel(db.Model):
     password = db.Column(db.String(200))
     admin = db.Column(db.Boolean)
     reset_password = db.Column(db.String(200))
+    #user_books = db.relationship('UserBooksModel', backref='user', lazy=True)
 
     def __init__(self, username, name, email, password, admin=False):
         self.username = username

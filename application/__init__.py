@@ -1,7 +1,7 @@
 '''application/__init__.py'''
-from models import BookModel, UserModel, RevokedTokenModel
+from models import BookModel, UserModel, RevokedTokenModel, UserBooksModel
 from views import (Books, BooksBookId, Registration, Login, Logout, ResetPassword,
-                   ChangePassword, BorrowAndReturnBook, BooksNotReturned, UserHistory)
+                   ChangePassword, BorrowAndReturnBook, UserHistory)
 
 from app import create_app, db
 

@@ -27,7 +27,7 @@ class Books(Resource):
             edition = data.get('edition')
             copies = data.get('copies')
 
-            my_list = [title, author, edition, copies]
+            my_list = [title, author, edition]
             for i in my_list:
                 if i is None or not i:
                     return {"message": "title, author, edition or copies fields missing"}, 400
@@ -43,7 +43,8 @@ class Books(Resource):
                 return {"message": "Copies entered cannot be a negative number"}, 400
             if copies == 0:
                 status = "unavailable"
-            status = "available"
+            if copies > 0:
+                status = "available"
 
             if BookModel.get_book_by_title(title):
                 return {"message": "Add book failed. Book title already exists"}, 409
@@ -51,7 +52,6 @@ class Books(Resource):
             my_book.save()
             return {"message": "Book successfully added"}, 201
         return {"message": "Admin privilege required"}, 403
-
 
 class BooksBookId(Resource):
     '''class representing book by id actions'''
@@ -100,10 +100,8 @@ class BooksBookId(Resource):
                 if i is None or not i:
                     return dict(message="Enter vaild data"), 400
 
-            if not isinstance(copies, int):
-                return {"message": "Field copies has to be an integer"}, 400
-            if copies < 0:
-                return {"message": "Copies entered cannot be a negative number"}, 400
+            if not isinstance(copies, int) or copies < 0:
+                return {"message": "Field copies has to be an integer and cannot be a negative number"}, 400
             status = status.encode('ascii')
             if status == "available" or status == "unavailable":
                 book.title = title

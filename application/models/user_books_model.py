@@ -40,15 +40,13 @@ class UserBooksModel(db.Model):
     def books_not_returned(cls, username):
         '''return all user books not returned'''
         unreturned_books = cls.query.filter_by(username=username).all()
-        if unreturned_books is None:
-            return dict(message="No history yet")
         unreturned_list = []
         for book in unreturned_books:
             if book.return_status is False:
                 date_borrowed = str(book.date_borrowed.day) + '-' + str(book.date_borrowed.month) + '-' + str(book.date_borrowed.year)
                 details = dict(book_id=book.book_id, date_borrowed=date_borrowed, date_returned="None", returned=book.return_status)
                 unreturned_list.append(details)
-        return dict(username=unreturned_list)
+        return {username: unreturned_list}
 
     def save(self):
         '''commit and save data from object'''

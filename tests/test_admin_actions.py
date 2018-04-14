@@ -103,7 +103,7 @@ class AuthenticationTestCase(unittest.TestCase):
         #non-existent book
         result3 = self.client().delete('/api/v1/books/20', headers=dict(Authorization="Bearer " + self.admin_token))
         self.assertEqual(result3.status_code, 404)
-        self.assertEqual("book 20 doesn't exist", (ast.literal_eval(result2.data))["message"])
+        self.assertEqual("book 20 doesn't exist", (ast.literal_eval(result3.data))["message"])
         #successful admin delete book
         result4 = self.client().delete('/api/v1/books/1', headers=dict(Authorization="Bearer " + self.admin_token))
         self.assertEqual(result4.status_code, 200)

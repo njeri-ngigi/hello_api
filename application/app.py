@@ -11,7 +11,7 @@ db = SQLAlchemy()
 def create_app(config_name):
     '''function enclosing FlaskAPP'''
     from application import (Books, BooksBookId, Registration, Login, Logout, ResetPassword,
-                             ChangePassword, BorrowAndReturnBook, BooksNotReturned, UserHistory)
+                             ChangePassword, BorrowAndReturnBook, UserHistory)
     from application import RevokedTokenModel
 
     app = Flask(__name__)
@@ -49,10 +49,8 @@ def create_app(config_name):
     api.add_resource(Logout, '/api/v1/auth/logout')
     api.add_resource(ResetPassword, '/api/v1/auth/reset-password')
     api.add_resource(ChangePassword, '/api/v1/auth/change-password')
-    api.add_resource(BorrowAndReturnBook,
-                     '/api/v1/users/books/<int:book_id>')
+    api.add_resource(BorrowAndReturnBook, '/api/v1/users/books/<int:book_id>')
     api.add_resource(UserHistory, '/api/v1/users/books')
-    api.add_resource(BooksNotReturned, '/api/v1/')
     api.add_resource(Books, '/api/v1/books')
     api.add_resource(BooksBookId, '/api/v1/books/<int:book_id>')
 
