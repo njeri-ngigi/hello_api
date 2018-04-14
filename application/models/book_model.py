@@ -1,5 +1,6 @@
 '''models/book_model.py'''
 from application.app import db
+from datetime import datetime, time
 
 class BookModel(db.Model):
     '''class representing books table'''
@@ -11,6 +12,8 @@ class BookModel(db.Model):
     edition = db.Column(db.String(10))
     status = db.Column(db.String(20))
     copies = db.Column(db.Integer)
+    date_created = db.Column(db.DateTime)
+    date_modified = db.Column(db.DateTime)
 
     def __init__(self, author, title, edition, copies, status):
         self.author = author
@@ -18,6 +21,7 @@ class BookModel(db.Model):
         self.edition = edition
         self.copies = copies
         self.status = status
+        self.date_created = datetime.now()
 
     def save(self):
         '''commit and save data from object'''

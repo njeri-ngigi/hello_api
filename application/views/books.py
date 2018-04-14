@@ -1,4 +1,5 @@
 '''views/books.py'''
+from datetime import datetime
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import (
@@ -109,6 +110,7 @@ class BooksBookId(Resource):
                 book.edition = edition
                 book.copies = copies
                 book.status = status
+                book.date_modified = datetime.now()
                 book.save()
                 return dict(message="Book {} successfully edited".format(book_id)), 200
 

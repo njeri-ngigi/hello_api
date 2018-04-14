@@ -1,4 +1,4 @@
-'''tests/test_book_model.py'''
+'''tests/test_register_user.py'''
 import unittest
 import json
 import ast

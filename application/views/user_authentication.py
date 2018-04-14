@@ -1,6 +1,7 @@
 '''views/user_authentication.py'''
 import random
 import string
+from datetime import datetime
 from flask import request
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_restful import Resource
@@ -30,6 +31,8 @@ class Login(Resource):
 
         if check_password_hash(user_object.password, password) is True:
             access_token = create_access_token(identity=user_object)
+            user_object.last_login = datetime.now()
+            user_object.save()
             return dict(token=access_token, message="Login successful"), 200
 
         return {"message": "Incorrect password"}, 401
@@ -114,6 +117,7 @@ class ChangePassword(Resource):
             if check_password_hash(reset, reset_password) is True:
                 user.password = generate_password_hash(new_password)
                 user.reset_password = False
+                user.last_reset_password = datetime.now()
                 user.save()
 
                 #revoke reset token after successfully changing password
@@ -147,6 +151,7 @@ class ChangePassword(Resource):
         user = UserModel.get_user_by_username(user_identity)
         if check_password_hash(user.password, old_password) is True:
             user.password = generate_password_hash(new_password)
+            user.last_change_password = datetime.now()
             user.save()
 
             return dict(message="password changed successfully"), 200

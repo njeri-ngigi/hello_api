@@ -1,4 +1,4 @@
-'''tests/test_authentication.py'''
+'''tests/test_change_password.py'''
 import unittest
 import json
 import ast
