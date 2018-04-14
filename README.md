@@ -1,6 +1,6 @@
 # Hello Books API with PostgreSQL
 Hello books API is a RESTful Flask application for a simple application that helps manage a library and its processes like stocking, tracking and renting books. Books can be added, deleted, retrieved and edited through endpoints. A user can login in, logout, reset password and borrow a book through the endpoints too. 
-###### Travis CI [![Build Status](https://travis-ci.org/njeri-ngigi/hello_api.svg?branch=master)](https://travis-ci.org/njeri-ngigi/hello_api) Coveralls [![Coverage Status](https://coveralls.io/repos/github/njeri-ngigi/hello_api/badge.svg)](https://coveralls.io/github/njeri-ngigi/hello_api) Codeclimate [![Maintainability](https://api.codeclimate.com/v1/badges/134755222a765551cf15/maintainability)](https://codeclimate.com/github/njeri-ngigi/hello_api/maintainability)
+###### Travis CI [![Build Status](https://travis-ci.org/njeri-ngigi/hello_api.svg?branch=master)](https://travis-ci.org/njeri-ngigi/hello_api) Coveralls [![Coverage Status](https://coveralls.io/repos/github/njeri-ngigi/hello_api/badge.svg?branch=unittests)](https://coveralls.io/github/njeri-ngigi/hello_api?branch=unittests) Codeclimate [![Maintainability](https://api.codeclimate.com/v1/badges/134755222a765551cf15/maintainability)](https://codeclimate.com/github/njeri-ngigi/hello_api/maintainability)
 
 #### Endpoints implemented include:
 | Endpoint route                                 |   Endpoint functionality                                    |
