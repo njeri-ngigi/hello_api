@@ -93,7 +93,24 @@ class AuthenticationTestCase(unittest.TestCase):
         
     def test_admin_delete_book(self):
         '''test only admin can delete book'''
-
+        # successful admin add book
+        result = self.client().post('/api/v1/books', headers=dict(Authorization="Bearer " + self.admin_token), content_type="application/json", data=json.dumps({"title":"The Davinci Code", "author":"Leonardo Davinci", "edition":"2nd", "copies":3}))
+        self.assertEqual(result.status_code, 201)
+        # regular user delete book
+        result2 = self.client().delete('/api/v1/books/1', headers=dict(Authorization="Bearer " + self.user_token))
+        self.assertEqual(result2.status_code, 403)
+        self.assertEqual("Admin privilege required", (ast.literal_eval(result2.data))["message"])
+        #non-existent book
+        result3 = self.client().delete('/api/v1/books/20', headers=dict(Authorization="Bearer " + self.admin_token))
+        self.assertEqual(result3.status_code, 404)
+        self.assertEqual("book 20 doesn't exist", (ast.literal_eval(result2.data))["message"])
+        #successful admin delete book
+        result4 = self.client().delete('/api/v1/books/1', headers=dict(Authorization="Bearer " + self.admin_token))
+        self.assertEqual(result4.status_code, 200)
+        self.assertEqual("book 1 deleted successfully", (ast.literal_eval(result4.data))["message"])
+        #assert book has been deleted
+        result5 = self.client().get('/api/v1/books/1')
+        self.assertEqual(result5.status_code, 404)
         
     def tearDown(self):
         with self.app.app_context():
