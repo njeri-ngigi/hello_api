@@ -37,7 +37,17 @@ class BookModel(db.Model):
     def get_book_by_title(cls, title):
         '''retrieve single book by title'''
         return cls.query.filter_by(title=title).first()
-
+    
+    @classmethod
+    def get_all_books_with_limit(cls, limit):
+        '''retrieving books with user set limit'''
+        all_books = {}
+        result = cls.query.limit(limit)
+        for book in result:
+            all_books[book.book_id] = {"title": book.title, "author": book.author,
+                                       "edition": book.edition, "copies": book.copies,
+                                       "status": book.status}
+        return all_books
     @classmethod
     def get_all_books(cls):
         '''retrieve all books'''
