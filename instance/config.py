@@ -16,7 +16,7 @@ class TestingConfig(Config):
     Debug = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres@localhost/test_db'
 
-app_config =
+app_config = {
     'development' : DevelopmentConfig,
     'testing' : TestingConfig
 }
