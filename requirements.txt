@@ -2,6 +2,7 @@ aadict==0.2.3
 alembic==0.9.9
 aniso8601==3.0.0
 asset==0.6.12
+Cerberus==1.1
 click==6.7
 Flask==0.12.2
 Flask-API==1.0
