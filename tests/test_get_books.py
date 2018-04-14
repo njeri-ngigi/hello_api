@@ -20,6 +20,7 @@ class GetBooksTestCase(unittest.TestCase):
         token = login["token"]
         self.client().post('/api/v1/books', headers=dict(Authorization="Bearer " + token), content_type="application/json", data=json.dumps({"title":"I am here", "author":"Kimemia", "edition":"7th", "copies":12}))
         self.client().post('/api/v1/books', headers=dict(Authorization="Bearer " + token), content_type="application/json", data=json.dumps({"title":"Dandy Daddy", "author":"Macey Mace", "edition":"2nd", "copies":3}))
+        self.client().post('/api/v1/books', headers=dict(Authorization="Bearer " + token), content_type="application/json", data=json.dumps({"title":"There's something you don't know", "author":"Macey Mace", "edition":"2nd", "copies":3}))
 
     def test_get_all_books(self):
         '''test to get all books'''
@@ -27,6 +28,12 @@ class GetBooksTestCase(unittest.TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn("I am here", result.data)
         self.assertIn("Macey Mace", result.data)
+
+    def test_get_books_by_user_limit(self):
+        '''test pagination, get books by user limit'''
+        result = self.client().get('/api/v1/books?limit=2')
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(2, len(ast.literal_eval(result.data)))
 
     def test_get_single_book_by_id(self):
         '''test to get single book by id'''
