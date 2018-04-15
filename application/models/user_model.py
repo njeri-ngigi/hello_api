@@ -18,8 +18,8 @@ class UserModel(db.Model):
     last_login = db.Column(db.DateTime)
     last_change_password = db.Column(db.DateTime)
     last_reset_password = db.Column(db.DateTime)
+    user_books = db.relationship("UserBooksModel", cascade="all, delete-orphan")
     
-
     def __init__(self, username, name, email, password, admin=False):
         self.username = username
         self.name = name
@@ -42,6 +42,11 @@ class UserModel(db.Model):
     def save(self):
         '''commit and save data from object'''
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        '''delete a user account'''
+        db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):

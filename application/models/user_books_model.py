@@ -8,7 +8,7 @@ class UserBooksModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), db.ForeignKey('users.username'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.book_id'), nullable=False)
+    book_id = db.Column(db.Integer, nullable=False)
     date_borrowed = db.Column(db.DateTime)
     date_returned = db.Column(db.DateTime)
     return_status = db.Column(db.Boolean)
