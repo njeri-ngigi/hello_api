@@ -2,3 +2,4 @@
 from book_model import BookModel
 from user_model  import UserModel
 from revoked_token_model import RevokedTokenModel
+from user_books_model import UserBooksModel
