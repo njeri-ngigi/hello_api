@@ -33,7 +33,7 @@ class Login(Resource):
             access_token = create_access_token(identity=user_object)
             user_object.last_login = datetime.now()
             user_object.save()
-            return dict(token=access_token, message="Login successful"), 200
+            return dict(message="Login successful", token=access_token), 200
 
         return {"message": "Incorrect password"}, 401
 

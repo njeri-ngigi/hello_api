@@ -2,286 +2,267 @@ FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
 # Hello Books API with PostgreSQL Documentation
-
 Hello books API is a RESTful Flask application for a simple application 
 that helps manage a library and its processes like stocking, 
 tracking and renting books. Books can be retrieved through the routes. Users can register, login, logout, reset password and change password.
 An admin can add, edit and delete books. A regular user can borrow and return a books. User history and books not yet returned can also be retrieved.
 
+## Register User [/api/v1/auth/register]
 
-### Register Users ['/api/v1/auth/register']
-```
-Method ['POST'] 
-```
+To register an admin user set admin field to true else it is not included
+### Add a new user [POST]
 
-##### Register an admin
-```
-    Request (application/json)
-        Body
++ Request (application/json)
+
+    + Body
+    
             {
                 "name":"Mulandi Mike", "username":"mikey", "email":"qw@we.com",
                 "password":"Hello123", "confirm password":"Hello123", "admin": "true"
             }
-             
-    Response 201 (application/json)
-        Body
+
++ Response 201 (application/json)
+
+    + Body
+
             {
                 "message":"Admin user successfully added"
             }
-```
-##### Register a regular user
-```
-    Request (application/json)
-        Body
-            {
-                "name":"Vivian", "username":"vivi", "email":"vivi@we.com",
-                "password":"Hello123", "confirm password":"Hello123"
-            }
-             
-    Response 201 (application/json)
-        Body
-            {
-                "message":"User successfully added"
-            }
-```
 
-### User Login
-> Login user by issuing a token
+## Login User [/api/v1/auth/login]
 
-```
-Method ['POST']
+### Login user [POST]
 
-    Request (application/json)
-        Body
++ Request (application/json)
+
+    + Body
+    
             {
                 "username":"mikey", "password":"Hello123"
             }
-            
-    Response
-        body
+
++ Response 200 (application/json)
+
+    + Body
+
             {
+                "message" : "Login successful"
                 "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             }
-```
+            
+## Logout User [/api/v1/auth/logout]
+A user needs to be logged in to access this endpoint using the login token
+### Logout user [POST]
 
-### User Logout
-> Logout user by blacklisting a token
++ Request (application/json)
 
-```
-Method = ['POST']
-    Request
-        Header
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
             {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                "message" : "Successfully logged out"
             }
             
-    Response 200 (application/json)
-        body
-            {
-                "message":"Logout Successful"
-            }
-```
-### Reset Password ['/api/v1/auth/reset-password']
-> Generate a random password and a reset-token to use in changing password
+## Reset Password [/api/v1/auth/reset-password]
 
-```
-Method = ['POST']
-    Request (application/json)
-        Body 
-            {
-                "username":"mikey"
-            }
-        
-    Response 200 (application/json)
-        Body {
-                "reset_password": "B6OPPIM",
-                "reset_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-             }
-```
-### Change Password ['/api/v1/auth/change-password']
-```
-Method = ['PUT']
-```
-##### Change password through reset
-```
-    Request
-        Header
-            {Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
-        Body
-            {
-                "reset_password": "B6OPPIM", "new_password": "Mayaq!", "confirm_password": "Mayaq!"
-            }
-                                
-        Response 200 (application/json)
-            body 
-                {
-                    "message":"password changed successfully"
-                }
-```
-##### Change password through login
-```
-    Request
-        Header
-            {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV..."
-            }
-        Body
-            {
-                "old_password": "B6OPPIM", "new_password": "Mayaq!", "confirm_password": "Mayaq!"
-            }
-                                
-    Response 200 (application/json)
-        body
-            {"message":"password changed successfully"}
-```
-### Get Books 
-##### Retrieve all books ['/api/v1/books']
-```
-[Method = 'GET']
-```
-> Retrieves all books from the database
+### Reset Password [POST]
 
-```
-    Response 200 (application/json)
++ Request (application/json)
+
+    + Body
+    
+            {
+                "username" : "mikey"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "reset_password" : "B6OPPIM",
+                "reset_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+            
+## Change Password [/api/v1/auth/change-password]
+
+If token is from reset-password endpoint replace the field 'old_password' with 'reset_password'
+and use the generated reset_password as the value
+
+### Change password [PUT]
+
++ Request (application/json)
+
+    + Body
+    
+            {
+                "old_password" : "Hello123",
+                "new_password" : "Iwasneverhere!",
+                "confirm_password" : "Iwasneverhere!"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "message" : "password changed successfully"
+            }
+            
+## Books [/api/v1/books]
+
+### Get All Books [GET]
+
++ Response 200 (application/json)
+
         {
             "1" : {"title": "Go Home, Susan", "author": "Jonas Jonas", "copies": 4, "edition": "3rd", "status":"available"},
             "2" : {'title': "Tiny Bugs", "author": "Mary", "copies": 2, "edition": "1st", "status":"available"}
             "3" : {'title': "Many Faces", "author": "Giddy", "copies": 4, "edition": "1st", "status":"available"}
         }
-```
-##### Retrieve books with limit set ['/api/v1/books?limit=2']
-```
-[Method = 'GET']
-```
-> Retrieves books specified in the limit parameter from the database
 
-```
-    Response 200 (application/json)
-        {
-            "1" : {"title": "Go Home, Susan", "author": "Jonas Jonas", "copies": 4, "edition": "3rd", "status":"available"},
-            "2" : {'title': "Tiny Bugs", "author": "Mary", "copies": 4, "edition": "1st", "status":"available"}
-        }
-```
-##### Retrieve Single Book by Id ['/api/v1/books/{}']
-```
-[Method = 'GET']
-```
-> Retrieves a single book by id from the database
+### Add a new book [POST]
 
-```
-    Response 200 (application/json)
+You need to be an admin to add a book using this action. It takes a JSON
+object containing details of a book.
+
++ Request (application/json)
+
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+    + Body
+    
+            {
+                "title":"I'm out", "author":"Patrick Swazey",
+                "edition":"4th", "book_id":4, "copies": 4
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "message":"Book added successfully"
+            }
+
+## Books BookId [/api/v1/books/1]
+
+### Get a Single Book [GET]
+
++ Response 200 (application/json)
+
         {
             "title": "Go Home, Susan", "author": "Jonas Jonas", "copies": 4, "edition": "3rd", "status":"available"
         }
-```
 
-### Admin actions
-##### Admin add book ['api/v1/books']
-```
-Method ['POST']
-    Request (application/json)
-        Header 
-            {   
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV..."
-            }
-        Body
-            {
-                "title":"I'm out", "author":"Patrick Swazey", "edition":"4th", "book_id":4, "copies": 4
-            }
+### Edit a book [PUT]
+
+You need to be an admin to edit a book using this action. It takes a JSON
+object containing details of a book.
+
++ Request (application/json)
+
+    + Headers
     
-    Response 201 (application/json)
-        Body
-            {
-                "message":"Book added successfully"
-        }
-
-```
-
-##### Admin edit book ['/api/v1/books/{}']
-```
-Method ['PUT']
- Request (application/json)
-    Header 
-        {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV..."
-        }
-    Location: '/api/v1/books/1'
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+    + Body
     
-    Body
-        {
-            "title":"I'm outta here"
-        }
+            {
+                "title":"I'm outta here"
+            }
 
-    Response 200 (application/json)
-        
-        Body
++ Response 200 (application/json)
+
+    + Body
+
             {
                 "message":"Book 1 edited successfully"
             }
+            
+### Delete a book [DELETE]
 
-```
-##### Admin delete book ['/api/v1/books/{}']
-```
-Method ['DELETE']
-    Request (application/json)
-        Header 
-            {
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV..."
-            }
-        Location: '/api/v1/books/1'
-        
-    Response 200 (application/json)
-        Body
+You need to be an admin to delete a book using this action. It takes a JSON
+object containing details of a book.
+
++ Request (application/json)
+
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
             {
                 "message":"Book 1 deleted successfully"
             }
 
-```
+## User Books [/api/v1/users/books/1]
 
-### User Borrow a book ['/api/v1/users/books/{}']
-```
-Method ['POST']
-    Request
-        Header
+A user needs to be logged in to access this endpoint using the login token
+
+### Borrow a book [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
             {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                "message":"book successfully checked out"
             }
-                            
-        Location: '/api/v1/users/books/1'
-        
-    Response 200 (application/json)
-        Body 
-            {
-                "message":"Book successfully checked out"
-            }
-```
-### User Return a book ['/api/v1/users/books/{}']
-```
-Method ['PUT']
-    Request
-        Header
-            {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            }
-        Location: '/api/v1/users/books/1'
-        
-    Response 200 (application/json)
-        Body 
+            
+### Return a book [PUT]
+
++ Request (application/json)
+
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
             {
                 "message":"book 1 successfully returned"
             }
-```
-### User history ['/api/v1/users/books']
-```
-Method ['GET']
-    Request
-        Header
-            {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            }
+            
+## User History [/api/v1/users/books]
+
+A user needs to be logged in to access this endpoint using the login token
+
+### User History [GET]
+
++ Request (application/json)
+
+    + Headers
     
-    Response 200 (application/json)
-        Body 
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
             {
                 "mikey": 
                 [
@@ -299,27 +280,3 @@ Method ['GET']
                     }
                 ]
             }
-```
-### User Books not yet returned ['/api/v1/users/books?returned=false']
-```
-Method ['GET']
-    Request
-        Header
-            {
-                Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            }
-    
-    Response 200 (application/json)
-        Body 
-            {
-                "mikey": 
-                [
-                    {
-                        "book_id": 1,
-                        "date_borrowed": "14-4-2018",
-                        "date_returned": "None",
-                        "returned": false
-                    }
-                ]
-            }
-```
