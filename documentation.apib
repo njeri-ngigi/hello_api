@@ -6,6 +6,7 @@ Hello books API is a RESTful Flask application for a simple application
 that helps manage a library and its processes like stocking, 
 tracking and renting books. Books can be retrieved through the routes. Users can register, login, logout, reset password and change password.
 An admin can add, edit and delete books. A regular user can borrow and return a books. User history and books not yet returned can also be retrieved.
+Users can also delete their own accounts.
 
 ## Register User [/api/v1/auth/register]
 
@@ -67,6 +68,25 @@ A user needs to be logged in to access this endpoint using the login token
 
             {
                 "message" : "Successfully logged out"
+            }
+            
+## Remove user account [/api/v1/auth/remove-user]
+A user account can only be deleted if the user has returned all borrowed books
+### Remove user account [DELETE]
+
++ Request (application/json)
+
+    + Headers
+    
+                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...
+            
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "message" : "user account successfully deleted"
             }
             
 ## Reset Password [/api/v1/auth/reset-password]
@@ -280,3 +300,4 @@ A user needs to be logged in to access this endpoint using the login token
                     }
                 ]
             }
+            
