@@ -1,6 +1,6 @@
 '''models/book_model.py'''
+from datetime import datetime
 from application.app import db
-from datetime import datetime, time
 
 class BookModel(db.Model):
     '''class representing books table'''

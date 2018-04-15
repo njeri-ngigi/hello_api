@@ -18,7 +18,7 @@ class UserModel(db.Model):
     last_login = db.Column(db.DateTime)
     last_change_password = db.Column(db.DateTime)
     last_reset_password = db.Column(db.DateTime)
-    #user_books = db.relationship('UserBooksModel', backref='user', lazy=True)
+    
 
     def __init__(self, username, name, email, password, admin=False):
         self.username = username
