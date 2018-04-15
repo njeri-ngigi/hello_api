@@ -1,7 +1,8 @@
 '''views/user_registration.py'''
 from flask import request
 from flask_restful import Resource
-from application import UserModel
+from flask_jwt_extended import jwt_required,  get_jwt_identity, get_raw_jwt
+from application import UserModel, UserBooksModel, RevokedTokenModel
 from validate import Validate
 
 class Registration(Resource):
@@ -43,3 +44,20 @@ class Registration(Resource):
             return {"message": "Admin user successfully added"}, 201
 
         return {"message": "Admin has to be True or left empty"}, 400
+
+class RemoveUser(Resource):
+    '''class representing deleting a user account'''
+    @jwt_required
+    def delete(self):
+        '''method to delete a user account'''
+        identity = get_jwt_identity()
+        my_user = UserModel.get_user_by_username(identity)
+        books_not_returned = UserBooksModel.books_not_returned(identity)
+        if len(books_not_returned[identity]) == 0:
+            my_user.delete()
+            #revoke user token after successfully deleting user account
+            json_token_identifier = get_raw_jwt()['jti']
+            revoked_token = RevokedTokenModel(json_token_identifier=json_token_identifier)
+            revoked_token.save()
+            return dict(message="user account successfully deleted"), 200
+        return dict(message="Return all books to delete user account"), 403
