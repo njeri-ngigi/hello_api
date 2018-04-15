@@ -10,7 +10,7 @@ db = SQLAlchemy()
 
 def create_app(config_name):
     '''function enclosing FlaskAPP'''
-    from application import (Books, BooksBookId, Registration, Login, Logout, ResetPassword,
+    from application import (Books, BooksBookId, Registration, RemoveUser, Login, Logout, ResetPassword,
                              ChangePassword, BorrowAndReturnBook, UserHistory)
     from application import RevokedTokenModel
 
@@ -45,6 +45,7 @@ def create_app(config_name):
         return RevokedTokenModel.is_jti_blacklisted(json_token_identifier)
 
     api.add_resource(Registration, '/api/v1/auth/register')
+    api.add_resource(RemoveUser, '/api/v1/auth/remove-user')
     api.add_resource(Login, '/api/v1/auth/login')
     api.add_resource(Logout, '/api/v1/auth/logout')
     api.add_resource(ResetPassword, '/api/v1/auth/reset-password')
