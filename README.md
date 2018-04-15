@@ -3,21 +3,21 @@ Hello books API is a RESTful Flask application for a simple application that hel
 ###### Travis CI [![Build Status](https://travis-ci.org/njeri-ngigi/hello_api.svg?branch=unittests)](https://travis-ci.org/njeri-ngigi/hello_api) Coveralls [![Coverage Status](https://coveralls.io/repos/github/njeri-ngigi/hello_api/badge.svg?branch=unittests)](https://coveralls.io/github/njeri-ngigi/hello_api?branch=unittests) Codeclimate [![Maintainability](https://api.codeclimate.com/v1/badges/134755222a765551cf15/maintainability)](https://codeclimate.com/github/njeri-ngigi/hello_api/maintainability)
 
 #### Endpoints implemented include:
-| Endpoint route                                 |   Endpoint functionality                                    |
-| ---------------------------------------------- |:-----------------------------------------------------------:|
-| POST      (/api/v1/auth/register)              |   Creates a user account                                    |
-| POST      (/api/v1/auth/login)                 |   Logs in a user                                            |
-| POST      (/api/v1/auth/logout)                |   Logs out a user                                           |
-| POST      (/api/v1/auth/reset-password)        |   Password reset                                            |
-| POST      (/api/v1/books)                      |   add a book                                                |
-| PUT       (/api/v1/books/<bookId>)             |   modify a book’s information                               |
-| DELETE    (/api//books/<bookId>)               |   Remove a book                                             |
-| GET       (/api/v1/books)                      |   Retrieves all books                                       |
-| GET       (/api/v1/books/<bookId>)             |   Get a book                                                |
-| POST      (/api/v1/users/books/<bookId>)       |   Borrow a book                                             |
-| PUT       (/api/v1/users/books/<bookId>)       |   Return a book                                             |
-| GET       (/api/v1/users/books?returned=false) |   Get the books that have not been returned by the borrower |
-| GET       (/api/v1/users/books)                |   Get the borrowing history of a user                       |
+| Endpoint route                                 |   Endpoint functionality                                     |
+| ---------------------------------------------- |:------------------------------------------------------------:|
+| POST      (/api/v1/auth/register)              |   Creates a user account                                     |
+| POST      (/api/v1/auth/login)                 |   Logs in a user                                             |
+| POST      (/api/v1/auth/logout)                |   Logs out a user                                            |
+| POST      (/api/v1/auth/reset-password)        |   Password reset                                             |
+| POST      (/api/v1/books)                      |   add a book                                                 |
+| PUT       (/api/v1/books/<bookId>)             |   modify a book’s information                                |
+| DELETE    (/api//books/<bookId>)               |   Remove a book                                              |
+| GET       (/api/v1/books)                      |   Retrieves all books                                        |
+| GET       (/api/v1/books/<bookId>)             |   Get a book                                                 |
+| POST      (/api/v1/users/books/<bookId>)       |   Borrow a book                                              |
+| PUT       (/api/v1/users/books/<bookId>)       |   Return a book                                              |
+| GET       (/api/v1/users/books?returned=false) |   Get the books that have not been returned by the borrower  |
+| GET       (/api/v1/users/books)                |   Get the borrowing history of a user                        |
 
 
 ## Prerequisites
