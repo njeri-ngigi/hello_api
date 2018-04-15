@@ -89,9 +89,8 @@ class ResetPassword(Resource):
 
         return {"message": "User doesn't exist"}, 404
 
-def change_reset_password(reset):
+def change_reset_password(reset, data):
     '''helper method for change password through reset token'''
-    data = request.get_json()
     if not data:
         return dict(message="Fields can't be empty"), 400
     reset_password = data.get("reset_password")
@@ -126,13 +125,14 @@ class ChangePassword(Resource):
     @jwt_required
     def put(self):
         '''Change a password'''
+        data = request.get_json()
+
         claims = get_jwt_claims()
         reset = claims["reset_password"].encode('ascii')
         if reset != "false":
             '''if reset password is not false call change_reset_password() helper method'''
-            return change_reset_password(reset)
+            return change_reset_password(reset, data)
         
-        data = request.get_json()
         if not data:
             return dict(message="Fields cannot be empty"), 400
 
