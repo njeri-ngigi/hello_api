@@ -51,7 +51,7 @@ class RegisterUserTestCase(unittest.TestCase):
         my_data7 = ast.literal_eval(result7.data)
         self.assertEqual(result7.status_code, 400)
         self.assertEqual("name, username, email, password or confirm_password fields missing", my_data7["message"])
-
+        
     def tearDown(self):
         with self.app.app_context():
             db.session.remove()
