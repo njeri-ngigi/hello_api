@@ -89,7 +89,38 @@ class ResetPassword(Resource):
 
         return {"message": "User doesn't exist"}, 404
 
+def change_reset_password(reset):
+    '''helper method for change password through reset token'''
+    data = request.get_json()
+    if not data:
+        return dict(message="Fields can't be empty"), 400
+    reset_password = data.get("reset_password")
+    new_password = data.get("new_password")
+    confirm_password = data.get("confirm_password")
 
+    if reset_password is None or new_password is None:
+        return dict(message="reset password or new password fields missing"), 400
+
+    password = Validate().validate_password(new_password, confirm_password)
+    if "message" in password:
+        return password, 400
+
+    user_identity = get_jwt_identity()
+    user = UserModel.get_user_by_username(user_identity)
+    if check_password_hash(reset, reset_password) is True:
+        user.password = generate_password_hash(new_password)
+        user.reset_password = False
+        user.last_reset_password = datetime.now()
+        user.save()
+
+        #revoke reset token after successfully changing password
+        json_token_identifier = get_raw_jwt()['jti']
+        revoked_token = RevokedTokenModel(json_token_identifier=json_token_identifier)
+        revoked_token.save()
+        return dict(message="password changed successfully"), 200
+
+    return dict(message="incorrect reset password"), 401
+    
 class ChangePassword(Resource):
     '''class representing change password endpoint'''
     @jwt_required
@@ -98,36 +129,9 @@ class ChangePassword(Resource):
         claims = get_jwt_claims()
         reset = claims["reset_password"].encode('ascii')
         if reset != "false":
-            data = request.get_json()
-            if not data:
-                return dict(message="Fields can't be empty"), 400
-            reset_password = data.get("reset_password")
-            new_password = data.get("new_password")
-            confirm_password = data.get("confirm_password")
-
-            if reset_password is None or new_password is None:
-                return dict(message="reset password or new password fields missing"), 400
-
-            password = Validate().validate_password(new_password, confirm_password)
-            if "message" in password:
-                return password, 400
-
-            user_identity = get_jwt_identity()
-            user = UserModel.get_user_by_username(user_identity)
-            if check_password_hash(reset, reset_password) is True:
-                user.password = generate_password_hash(new_password)
-                user.reset_password = False
-                user.last_reset_password = datetime.now()
-                user.save()
-
-                #revoke reset token after successfully changing password
-                json_token_identifier = get_raw_jwt()['jti']
-                revoked_token = RevokedTokenModel(json_token_identifier=json_token_identifier)
-                revoked_token.save()
-                return dict(message="password changed successfully"), 200
-
-            return dict(message="incorrect reset password"), 401
-
+            '''if reset password is not false call change_reset_password() helper method'''
+            return change_reset_password(reset)
+        
         data = request.get_json()
         if not data:
             return dict(message="Fields cannot be empty"), 400

@@ -39,20 +39,15 @@ class BookModel(db.Model):
         return cls.query.filter_by(title=title).first()
     
     @classmethod
-    def get_all_books_with_limit(cls, limit):
-        '''retrieving books with user set limit'''
-        all_books = {}
-        result = cls.query.limit(limit)
-        for book in result:
-            all_books[book.book_id] = {"title": book.title, "author": book.author,
-                                       "edition": book.edition, "copies": book.copies,
-                                       "status": book.status}
-        return all_books
-    @classmethod
-    def get_all_books(cls):
+    def get_all_books(cls, limit=None):
         '''retrieve all books'''
         all_books = {}
         result = cls.query.all()
+
+        if limit is not None:
+            '''if user sets limit'''
+            result = cls.query.limit(limit)
+    
         for book in result:
             all_books[book.book_id] = {"title": book.title, "author": book.author,
                                        "edition": book.edition, "copies": book.copies,

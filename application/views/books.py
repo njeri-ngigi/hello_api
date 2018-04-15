@@ -12,9 +12,7 @@ class Books(Resource):
     def get(self):
         '''method ['GET']'''
         limit = request.args.get('limit')
-        if limit is not None:
-            return BookModel.get_all_books_with_limit(limit), 200
-        return BookModel.get_all_books(), 200
+        return BookModel.get_all_books(limit), 200
 
     @jwt_required
     def post(self):
