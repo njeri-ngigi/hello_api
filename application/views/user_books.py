@@ -62,17 +62,6 @@ class UserHistory(Resource):
             unreturned_books = UserBooksModel.books_not_returned(identity)
             return unreturned_books, 200
 
-        all_user_books = UserBooksModel.user_history(identity)
-        history = []
-        for book in all_user_books:
-            my_date = book.date_returned
-            if my_date is not None:
-                my_date = str(my_date.day) + '-' + str(my_date.month) + '-' + str(my_date.year)
-            if my_date is None:
-                my_date = "None"
-            date_borrowed = str(book.date_borrowed.day) + '-' + str(book.date_borrowed.month) + '-' + str(book.date_borrowed.year)
-
-            details = dict(book_id=book.book_id, date_borrowed=date_borrowed, date_returned=my_date, returned=book.return_status)
-            history.append(details)
-        return {identity:history}, 200
+        history = UserBooksModel.user_history(identity)
+        return {identity: history}, 200
         

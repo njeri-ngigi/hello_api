@@ -18,11 +18,15 @@ class UserBooksModel(db.Model):
         self.book_id = book_id
 
     @classmethod
+    def date_format(cls, my_date):
+        '''method to return date format dd-mm-yyyy'''
+        return str(my_date.day) + '-' + str(my_date.month) + '-' + str(my_date.year)
+
+    @classmethod
     def find_user_book(cls, username, book_id):
         '''filter by username and book'''
         #book = cls.query.filter_by(username=username, book_id=book_id).first()
         book = cls.query.filter_by(username=username, book_id=book_id, return_status=False).first()
-        
         return book
 
     def borrow_book(self):
@@ -34,7 +38,19 @@ class UserBooksModel(db.Model):
     def user_history(cls, username):
         '''return user book history'''
         all_user_books = cls.query.filter_by(username=username).all()
-        return all_user_books
+        history = []        
+        for book in all_user_books:
+            date_returned = book.date_returned
+            if date_returned is not None:
+                date_returned = cls.date_format(date_returned)
+            if date_returned is None:
+                date_returned = "None"
+            date_borrowed = cls.date_format(book.date_borrowed)
+
+            details = dict(book_id=book.book_id, date_borrowed=date_borrowed,
+                           date_returned=date_returned, returned=book.return_status)
+            history.append(details)
+        return history
     
     @classmethod
     def books_not_returned(cls, username):
@@ -43,7 +59,7 @@ class UserBooksModel(db.Model):
         unreturned_list = []
         for book in unreturned_books:
             if book.return_status is False:
-                date_borrowed = str(book.date_borrowed.day) + '-' + str(book.date_borrowed.month) + '-' + str(book.date_borrowed.year)
+                date_borrowed = cls.date_format(book.date_borrowed)
                 details = dict(book_id=book.book_id, date_borrowed=date_borrowed, date_returned="None", returned=book.return_status)
                 unreturned_list.append(details)
         return {username: unreturned_list}
