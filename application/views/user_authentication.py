@@ -5,9 +5,8 @@ from datetime import datetime
 from flask import request
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_restful import Resource
-from flask_jwt_extended import (
-    create_access_token, create_refresh_token, jwt_required,
-    jwt_refresh_token_required, get_raw_jwt, get_jwt_claims, get_jwt_identity)
+from flask_jwt_extended import (create_access_token, jwt_required,
+                                get_raw_jwt, get_jwt_claims, get_jwt_identity)
 from application import UserModel, RevokedTokenModel
 from validate import Validate
 
@@ -37,14 +36,6 @@ class Login(Resource):
 
         return {"message": "Incorrect password"}, 401
 
-
-'''class TokenRefresh(Resource):
-    @jwt_refresh_token_required
-    def post(self):
-        current_user = get_jwt_identity()
-        access_token = create_access_token(identity=current_user)
-        return {"access_token": access_token}'''
-
 class Logout(Resource):
     '''class representing logout endpoint'''
     @jwt_required
@@ -56,16 +47,6 @@ class Logout(Resource):
             json_token_identifier=json_token_identifier)
         revoked_token.save()
         return {"message": "Successfully logged out"}, 200
-
-
-'''class LogoutRefresh(Resource):
-    @jwt_refresh_token_required
-    def post(self):
-        json_token_identifier = get_raw_jwt()['jti']
-        revoked_token = RevokedTokenModel(json_token_identifier=json_token_identifier)
-        revoked_token.save()
-        return {"message":"refresh token has been revoked"}'''
-
 
 class ResetPassword(Resource):
     '''class representing reset password endpoint'''

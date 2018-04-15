@@ -22,8 +22,10 @@ def create_app(config_name):
     app.config["TESTING"] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = 'my-key'
+    
     db.init_app(app)
-
+    
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
     app.config['JWT_BLACKLIST_ENABLED'] = True
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
     jwt = JWTManager(app)
