@@ -32,15 +32,10 @@ class RegisterUserTestCase(unittest.TestCase):
         self.assertEqual(result3.status_code, 409)
         self.assertEqual("Add user failed. Email entered already exists", my_data3["message"])
         #test successful registration of admin
-        result4 = self.client().post('/api/v1/auth/register', content_type="application/json", data=json.dumps({"name": "Shalon", "username": "shalon", "email": "shalon@to.com", "password": "Test123", "confirm_password": "Test123", "admin": "true"}))
+        result4 = self.client().post('/api/v1/auth/register?admin=true', content_type="application/json", data=json.dumps({"name": "Shalon", "username": "shalon", "email": "shalon@to.com", "password": "Test123", "confirm_password": "Test123"}))
         my_data4 = ast.literal_eval(result4.data)
         self.assertEqual(result4.status_code, 201)
         self.assertEqual("Admin user successfully added", my_data4["message"])
-        #test registration of admin with invalid admin value
-        result5 = self.client().post('/api/v1/auth/register', content_type="application/json", data=json.dumps({"name": "Shalon", "username": "shalon1", "email": "shalon1@to.com", "password": "Test123", "confirm_password": "Test123", "admin": "giberish"}))
-        my_data5 = ast.literal_eval(result5.data)
-        self.assertEqual(result5.status_code, 400)
-        self.assertEqual("Admin has to be True or left empty", my_data5["message"])
         #test registration using empty fields
         result6 = self.client().post('/api/v1/auth/register', content_type="application/json", data=json.dumps({}))
         my_data6 = ast.literal_eval(result6.data)

@@ -20,7 +20,7 @@ class RegisterUserTestCase(unittest.TestCase):
         user_login = ast.literal_eval((self.client().post('/api/v1/auth/login', content_type="application/json", data=json.dumps({"username":"jay", "password":"Test123"}))).data)
         self.user_token = user_login["token"]
         # register and login admin
-        self.client().post('/api/v1/auth/register', content_type="application/json", data=json.dumps({"name": "Shalon", "username": "shalon", "email": "shalon@to.com", "password": "Test123", "confirm_password": "Test123", "admin":"true"}))
+        self.client().post('/api/v1/auth/register?admin=true', content_type="application/json", data=json.dumps({"name": "Shalon", "username": "shalon", "email": "shalon@to.com", "password": "Test123", "confirm_password": "Test123"}))
         admin_login = ast.literal_eval((self.client().post('/api/v1/auth/login', content_type="application/json", data=json.dumps({"username":"shalon", "password":"Test123"}))).data)
         self.admin_token = admin_login["token"]
         #admin add book

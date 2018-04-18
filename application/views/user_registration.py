@@ -25,25 +25,24 @@ class Registration(Resource):
         if "message" in v:
             return v, 400
 
-        admin = data.get('admin')
+        admin = request.args.get('admin')
 
         if UserModel.get_user_by_username(v["username"]):
             return {"message": "Add user failed. Username already exists"}, 409
         if UserModel.get_user_by_email(v["email"]):
             return {"message": "Add user failed. Email entered already exists"}, 409
-        if not admin:
+        if admin is None:
             my_user = UserModel(username=v["username"], name=v["name"],
                                 email=v["email"], password=v["password"])
             my_user.save()
             return {"message": "User successfully added"}, 201
 
-        if admin == "True" or admin == "true":
-            my_user = UserModel(username=v["username"], name=v["name"],
+        
+        my_user = UserModel(username=v["username"], name=v["name"],
                                 email=v["email"], password=v["password"], admin=True)
-            my_user.save()
-            return {"message": "Admin user successfully added"}, 201
+        my_user.save()
+        return {"message": "Admin user successfully added"}, 201
 
-        return {"message": "Admin has to be True or left empty"}, 400
 
 class RemoveUser(Resource):
     '''class representing deleting a user account'''
