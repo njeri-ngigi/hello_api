@@ -10,7 +10,7 @@ Users can also delete their own accounts.
 
 ## Register User [/api/v1/auth/register]
 
-To register an admin user set admin field to true else it is not included
+To register an admin user pass admin in the url as such `'/api/v1/auth/register?admin=true'`
 ### Add a new user [POST]
 
 + Request (application/json)
@@ -19,7 +19,7 @@ To register an admin user set admin field to true else it is not included
     
             {
                 "name":"Mulandi Mike", "username":"mikey", "email":"qw@we.com",
-                "password":"Hello123", "confirm password":"Hello123", "admin": "true"
+                "password":"Hello123", "confirm password":"Hello123"
             }
 
 + Response 201 (application/json)
@@ -300,4 +300,7 @@ A user needs to be logged in to access this endpoint using the login token
                     }
                 ]
             }
+            
+            
+            
             
