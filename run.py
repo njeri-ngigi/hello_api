@@ -1,5 +1,5 @@
 '''run.py file'''
-from flask import jsonify
+from flask import jsonify, render_template
 from application import create_app
 
 config_name = 'development'
@@ -24,6 +24,11 @@ def unauthorized_method(error):
 def server_error(error):
     '''error handler for 404'''
     return jsonify(dict(error = 'Internal server error')), 500
+
+@app.route('/')
+def home():
+    '''method to render documentation'''
+    return render_template('documentation.html'), 200
 
 if __name__ == '__main__':
     app.run()
