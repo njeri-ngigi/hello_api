@@ -1,6 +1,6 @@
 # Hello Books API with PostgreSQL
 Hello books API is a RESTful Flask application for a simple application that helps manage a library and its processes like stocking, tracking and renting books. Books can be added, deleted, retrieved and edited through endpoints. A user can login in, logout, reset password and borrow a book through the endpoints too. 
-###### Travis CI [![Build Status](https://travis-ci.org/njeri-ngigi/hello_api.svg?branch=unittests)](https://travis-ci.org/njeri-ngigi/hello_api) Coveralls [![Coverage Status](https://coveralls.io/repos/github/njeri-ngigi/hello_api/badge.svg?branch=unittests)](https://coveralls.io/github/njeri-ngigi/hello_api?branch=unittests) Codeclimate [![Maintainability](https://api.codeclimate.com/v1/badges/134755222a765551cf15/maintainability)](https://codeclimate.com/github/njeri-ngigi/hello_api/maintainability)
+###### Travis CI [![Build Status](https://travis-ci.org/njeri-ngigi/hello_api.svg?branch=unittests)](https://travis-ci.org/njeri-ngigi/hello_api) Coveralls [![Coverage Status](https://coveralls.io/repos/github/njeri-ngigi/hello_api/badge.svg?branch=master)](https://coveralls.io/github/njeri-ngigi/hello_api?branch=master) Codeclimate [![Maintainability](https://api.codeclimate.com/v1/badges/134755222a765551cf15/maintainability)](https://codeclimate.com/github/njeri-ngigi/hello_api/maintainability)
 
 #### Endpoints implemented include:
 | Endpoint route                                 |   Endpoint functionality                                     |
@@ -16,8 +16,8 @@ Hello books API is a RESTful Flask application for a simple application that hel
 | GET       (/api/v1/books/<bookId>)             |   Get a book                                                 |
 | POST      (/api/v1/users/books/<bookId>)       |   Borrow a book                                              |
 | PUT       (/api/v1/users/books/<bookId>)       |   Return a book                                              |
-| GET       (/api/v1/users/books?returned=false) |   Get the books that have not been returned by the borrower  |
-| GET       (/api/v1/users/books)                |   Get the borrowing history of a user                        |
+| GET       (/api/v1/users/books?returned=false) |   Get books not yet returned                                 |
+| GET       (/api/v1/users/books)                |   Get borrowing history of a user                            |
 
 
 ## Prerequisites
