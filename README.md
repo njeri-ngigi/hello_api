@@ -68,7 +68,7 @@ Hello books API is a RESTful Flask application for a simple application that hel
   ```
    
 ### Deployment
-###### Application deployed to HEROKU [Hello-books-api](https://my-hello-books-api.herokuapp.com/)
+###### Application deployed to HEROKU [my-hello-books-api-unit]https://my-hello-books-api-unit.herokuapp.com/
 
 ### Documentation
 ###### [Apiary.io](https://helloword16.docs.apiary.io/#)
